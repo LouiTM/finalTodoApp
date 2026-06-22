@@ -4,7 +4,7 @@ import { ShowTodo } from './components/ShowTodo'
 import { AddInput } from './components/AddInput'
 
 function App() {
-  
+    
   const [todos, setTodos] = useState(() => {
     const savedTodos = localStorage.getItem("todos");
     if (savedTodos) {
@@ -13,6 +13,7 @@ function App() {
       return [];
     }
   });
+
   const [todo, setTodo] = useState({
     title: '',
     status: 'waiting'
@@ -25,17 +26,46 @@ function App() {
   const handleSubmit = (e) => {
     e.preventDefault();
     const newTodos = [...todos, todo]
-    if (newTodos.length > 40) {
-      alert('Delete any done todo')
-      setTodo({...todo, title: ''})
-      return
-    }
-    if (todo.title === '') {
-      setTodo({...todo, title: ''})
-      return
-    } 
+    
+    if (isNull()) return
+
+    if (isDifferent()) return
+
+    if (isMax()) return
+    
     setTodos(newTodos)
     setTodo({...todo, title: ''})
+  }
+
+  const isMax = () => {
+    if (todos.length > 39) {
+      alert('max todos')
+      setTodo({...todo, title: ''})
+      return true
+    } else return false
+  }
+
+  const isDifferent = () => {
+    const existingIndex = todos.findIndex(item => item.title === todo.title)
+    if (existingIndex === -1) return false
+    const existing = todos[existingIndex]
+    if (existing.status === 'done') {
+      const updated = todos.filter((_, i) => i !== existingIndex)
+      setTodos([...updated, todo])
+      setTodo({ ...todo, title: '' })
+      return true
+    } else {
+      alert('finish the existing one')
+      setTodo({...todo, title: ''})
+      return true
+    }
+  }
+
+  const isNull = () => {
+    if (todo.title === '') {
+      setTodo({...todo, title: ''})
+      return true
+    } else return false
   }
 
   const handleDelete = (index) => {
