@@ -14,71 +14,50 @@ function App() {
     }
   });
 
-  const [todo, setTodo] = useState({
-    title: '',
-    status: 'waiting'
-  });
+  const [title, setTitle] = useState("")
 
   const handleInputChange = (e) => {
-    setTodo({ ...todo, title: e.target.value });
+    setTitle(e.target.value);
   }
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    const newTodos = [...todos, todo]
-    
-    if (isNull()) return
+    e.preventDefault()
+    const trimmed = title.trim()
 
-    if (isDifferent()) return
+    if (!trimmed) return
 
-    if (isMax()) return
-    
-    setTodos(newTodos)
-    setTodo({...todo, title: ''})
-  }
-
-  const isMax = () => {
-    if (todos.length > 39) {
-      alert('max todos')
-      setTodo({...todo, title: ''})
-      return true
-    } else return false
-  }
-
-  const isDifferent = () => {
-    const existingIndex = todos.findIndex(item => item.title === todo.title)
-    if (existingIndex === -1) return false
-    const existing = todos[existingIndex]
-    if (existing.status === 'done') {
-      const updated = todos.filter((_, i) => i !== existingIndex)
-      setTodos([...updated, todo])
-      setTodo({ ...todo, title: '' })
-      return true
-    } else {
-      alert('finish the existing one')
-      setTodo({...todo, title: ''})
-      return true
+    const existingIndex = todos.findIndex(todo => todo.title === trimmed)
+    if (existingIndex !== -1) {
+      if (todos[existingIndex].status === 'done') {
+        setTodos([...todos.filter((_, i) => i !== existingIndex), { title: trimmed, status: 'waiting' }])
+      } else {
+        alert('finish the existing one')
+      }
+      setTitle('')
+      return
     }
-  }
+    
+    if (todos.length >= 40) {
+      alert('max todos')
+      setTitle('')
+      return
+    }
 
-  const isNull = () => {
-    if (todo.title === '') {
-      setTodo({...todo, title: ''})
-      return true
-    } else return false
+    
+
+    setTodos([...todos, { title: trimmed, status: 'waiting' }])
+    setTitle('')
   }
 
   const handleDelete = (index) => {
-    const newTodos = todos.filter((todo) => todo !== todos[index])
-    setTodos(newTodos)
+    setTodos(todos.filter((_, i) => i !== index))
   } 
 
   const handleUpdate = (index) => {
-    const newTodos = [...todos]
-    if (newTodos[index].status === 'waiting') newTodos[index].status = 'in process'
-    else if (newTodos[index].status === 'in process') newTodos[index].status = 'done'
-    else newTodos[index].status = 'waiting'
-    setTodos(newTodos)
+    const nextStatus = { waiting: 'in process', 'in process': 'done', done: 'waiting' }
+    setTodos(todos.map((todo, i) =>
+      i === index ? { ...todo, status: nextStatus[todo.status] } : todo
+    ))
   }
 
   useEffect(() => {
@@ -87,7 +66,7 @@ function App() {
 
   return (
     <>
-      <AddInput todo={todo} handleSubmit={handleSubmit} handleInputChange={handleInputChange}/>
+      <AddInput title={title} handleSubmit={handleSubmit} handleInputChange={handleInputChange}/>
       <ShowTodo todos={todos} handleUpdate={handleUpdate} handleDelete={handleDelete}/>
     </>
   )
