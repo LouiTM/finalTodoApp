@@ -1,28 +1,124 @@
+import { useState } from 'react'
+
 export const ShowTodo = (props) => {
-    const { todos, handleUpdate, handleDelete } = props
+  const { todos, handleUpdate, handleDelete } = props
+  const [filter, setFilter] = useState('all')
 
-    const getStatusClass = (status) => {
-      if (status === 'waiting') return 'todo-item1'
-      if (status === 'in process') return 'todo-item2'
-      if (status === 'done') return 'todo-item3'
-      return ''
-    }
+  // フィルタリング処理
+  const filteredTodos = todos.filter(todo => {
+    if (filter === 'waiting') return todo.status === 'waiting'
+    if (filter === 'done') return todo.status === 'done'
+    return true
+  })
 
+  // フィルター切り替えボタングループ
+  const filterGroup = (
+    <div className="filter-group">
+      <button 
+        type="button"
+        className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
+        onClick={() => setFilter('all')}
+      >
+        すべて
+      </button>
+      <button 
+        type="button"
+        className={`filter-btn ${filter === 'waiting' ? 'active' : ''}`}
+        onClick={() => setFilter('waiting')}
+      >
+        未着手
+      </button>
+      <button 
+        type="button"
+        className={`filter-btn ${filter === 'done' ? 'active' : ''}`}
+        onClick={() => setFilter('done')}
+      >
+        完了
+      </button>
+    </div>
+  )
+
+  // 全タスクがない場合
+  if (todos.length === 0) {
     return (
+      <div>
+        {filterGroup}
         <div className='todo-container'>
-          <ul>
-            {todos.map((todo, index) => {
+          <div className="empty-state">
+            <span className="empty-icon">☕</span>
+            <p>現在のタスクはありません。<br />のんびり過ごしましょう。</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // フィルター適用後のタスクがない場合
+  const renderEmptyState = () => {
+    if (filter === 'waiting') {
+      return (
+        <div className="empty-state">
+          <span className="empty-icon">🎉</span>
+          <p>すべてのタスクが完了しています！</p>
+        </div>
+      )
+    }
+    if (filter === 'done') {
+      return (
+        <div className="empty-state">
+          <span className="empty-icon">🌱</span>
+          <p>完了したタスクはまだありません。<br />マイペースに進めましょう。</p>
+        </div>
+      )
+    }
+    return null
+  }
+
+  return (
+    <div>
+      {filterGroup}
+      <div className='todo-container'>
+        {filteredTodos.length === 0 ? (
+          renderEmptyState()
+        ) : (
+          <ul className="todo-list">
+            {filteredTodos.map((todo) => {
+              // 元のtodos配列における正しいインデックスを見つける
+              const originalIndex = todos.findIndex(t => t.title === todo.title)
+              const isDone = todo.status === 'done'
+              const isDeleting = todo.deleting
+              
               return (
-                <li className={getStatusClass(todo.status)} key={index}>
-                  <h3>{index+1}</h3>
-                  <p>{todo.title}</p>
-                  <p>{todo.status}</p>
-                  <button onClick={() => handleUpdate(index)}>Edit</button>
-                  <button onClick={() => handleDelete(index)}>Delete</button>
+                <li className={`todo-item ${isDone ? 'done' : ''} ${isDeleting ? 'deleting' : ''}`} key={todo.title}>
+                  <div className="todo-left">
+                    <label className="checkbox-container">
+                      <input
+                        type="checkbox"
+                        checked={isDone}
+                        onChange={() => handleUpdate(originalIndex)}
+                      />
+                      <span className="checkmark"></span>
+                    </label>
+                    <span className="todo-text">{todo.title}</span>
+                  </div>
+
+                  <div className="todo-right">
+                    <button
+                      className="delete-btn"
+                      onClick={() => handleDelete(originalIndex)}
+                      aria-label="削除"
+                    >
+                      <svg viewBox="0 0 24 24">
+                        <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z" />
+                      </svg>
+                    </button>
+                  </div>
                 </li>
               )
             })}
           </ul>
-        </div>
-    )
+        )}
+      </div>
+    </div>
+  )
 }
