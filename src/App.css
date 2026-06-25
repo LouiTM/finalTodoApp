@@ -150,6 +150,7 @@ button.add-btn:active {
     opacity: 0;
     transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -168,6 +169,7 @@ button.add-btn:active {
     padding-top: 16px;
     padding-bottom: 16px;
   }
+
   100% {
     transform: translateX(100%);
     opacity: 0;
@@ -186,7 +188,6 @@ button.add-btn:active {
   min-width: 0;
 }
 
-/* カスタム円形チェックボックス */
 .checkbox-container {
   display: inline-block;
   position: relative;
@@ -220,7 +221,7 @@ button.add-btn:active {
   border-color: var(--accent-green);
 }
 
-.checkbox-container input:checked ~ .checkmark {
+.checkbox-container input:checked~.checkmark {
   background-color: var(--accent-green);
   border-color: var(--accent-green);
 }
@@ -238,7 +239,7 @@ button.add-btn:active {
   transform: rotate(45deg);
 }
 
-.checkbox-container input:checked ~ .checkmark::after {
+.checkbox-container input:checked~.checkmark::after {
   display: block;
 }
 
@@ -250,7 +251,6 @@ button.add-btn:active {
   word-break: break-all;
 }
 
-/* 完了状態 */
 .todo-item.done {
   opacity: 0.6;
 }
@@ -265,7 +265,6 @@ button.add-btn:active {
   align-items: center;
 }
 
-/* 削除ボタン */
 .delete-btn {
   background: none;
   border: none;
@@ -291,7 +290,6 @@ button.add-btn:active {
   fill: currentColor;
 }
 
-/* トースト通知 */
 .toast-container {
   position: fixed;
   top: 24px;
@@ -333,6 +331,7 @@ button.add-btn:active {
     transform: translateY(-20px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -356,7 +355,6 @@ button.add-btn:active {
   opacity: 1;
 }
 
-/* 空状態のメッセージ */
 .empty-state {
   text-align: center;
   padding: 32px 0;
@@ -370,7 +368,6 @@ button.add-btn:active {
   display: block;
 }
 
-/* フィルター切り替えボタン */
 .filter-group {
   display: flex;
   justify-content: center;

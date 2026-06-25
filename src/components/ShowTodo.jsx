@@ -4,31 +4,29 @@ export const ShowTodo = (props) => {
   const { todos, handleUpdate, handleDelete } = props
   const [filter, setFilter] = useState('all')
 
-  // フィルタリング処理
   const filteredTodos = todos.filter(todo => {
     if (filter === 'waiting') return todo.status === 'waiting'
     if (filter === 'done') return todo.status === 'done'
     return true
   })
 
-  // フィルター切り替えボタングループ
   const filterGroup = (
     <div className="filter-group">
-      <button 
+      <button
         type="button"
         className={`filter-btn ${filter === 'all' ? 'active' : ''}`}
         onClick={() => setFilter('all')}
       >
         すべて
       </button>
-      <button 
+      <button
         type="button"
         className={`filter-btn ${filter === 'waiting' ? 'active' : ''}`}
         onClick={() => setFilter('waiting')}
       >
         未着手
       </button>
-      <button 
+      <button
         type="button"
         className={`filter-btn ${filter === 'done' ? 'active' : ''}`}
         onClick={() => setFilter('done')}
@@ -38,7 +36,6 @@ export const ShowTodo = (props) => {
     </div>
   )
 
-  // 全タスクがない場合
   if (todos.length === 0) {
     return (
       <div>
@@ -53,7 +50,6 @@ export const ShowTodo = (props) => {
     )
   }
 
-  // フィルター適用後のタスクがない場合
   const renderEmptyState = () => {
     if (filter === 'waiting') {
       return (
@@ -83,11 +79,10 @@ export const ShowTodo = (props) => {
         ) : (
           <ul className="todo-list">
             {filteredTodos.map((todo) => {
-              // 元のtodos配列における正しいインデックスを見つける
               const originalIndex = todos.findIndex(t => t.title === todo.title)
               const isDone = todo.status === 'done'
               const isDeleting = todo.deleting
-              
+
               return (
                 <li className={`todo-item ${isDone ? 'done' : ''} ${isDeleting ? 'deleting' : ''}`} key={todo.title}>
                   <div className="todo-left">
